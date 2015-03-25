@@ -1,9 +1,7 @@
 import java.awt.Color;
-import java.awt.Point;
-import java.util.Random;
 
+import java.util.Random;
 import uwcse.graphics.GWindow;
-import uwcse.graphics.Line;
 import uwcse.graphics.Oval;
 import uwcse.graphics.Rectangle;
 import uwcse.graphics.Shape;
@@ -75,22 +73,7 @@ public class Background
 			window.add(star);
 			nearStars[i] = star;
 		}
-		
-		
-		/*
-		
-		for (int i = 0; i < 50; i++) 
-		{
-			// Random radius between 1 and 3
-			int radius = rnd.nextInt(3) + 1;
-			// Random location (within the window)
-			// Make sure that the full circle is visible in the window
 			
-			this.window.add(new Oval(x, y, 2 * radius, 2 * radius, Color.white,
-					true));
-		}*/
-		
-		
 	}
 	
 	public void update()
@@ -123,24 +106,6 @@ public class Background
 			}
 		}
 	}
-	public void draw()
-	{
-		this.window.add(space);
-		for(int i = 0; i < farStars.length; i++)
-		{
-			window.add(farStars[i]);
-		}
-		for(int i = 0; i < midStars.length; i++)
-		{
-			window.add(midStars[i]);
-		}
-		for(int i = 0; i < nearStars.length; i++)
-		{
-			window.add(nearStars[i]);
-		}
-	}
-	
-	
-	
+
 	
 }

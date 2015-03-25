@@ -1,75 +1,102 @@
+import uwcse.graphics.GWindow;
+import uwcse.io.AudioPlayer;
+import uwcse.io.Sound;
 
-import uwcse.graphics.*;
+import java.awt.Image;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+
 
 /**
  * A class that loads and stores the resources used in the game.
- *
+ * 
+ * I didn't have time to fix this, but most of these don't need to be arrays.
+ * It looks like this from earlier when I was trying something different that
+ * ended up not working.
  */
-public class Resources 
-{
-	private static String playerShipUrl, escapePodUrl, shuttleUrl, shuttleHitUrl, 
-	defenderUrl, defenderHit1Url, defenderHit2Url, bossUrl, bossDamage1Url,
-	bossDamage2Url;
-	
-	//Ship Images
-	public static Shape[] playerShip;
-	public static Shape[] escapePod;
-	public static Shape[] shuttle;
-	public static Shape[] defender;
-	public static Shape[] boss;
-	
-	//Bullets
-	public static Shape[] playerBullet;
-	public static Shape[] defenderBullet;
-	public static Shape[] bossBullet;
-	
-	//Effects
-	public static Shape[] explosion;
-	
-	//Sounds
-	//git clone public static Shape[] playerBullet;
-	
-	
-	//Music
-	
-	
-	
-	
-	
-	public static void load(GWindow window)
+public class Resources {
+
+	// Ship Images
+	public static Image[] playerShip;
+	public static Image[] escapePod;
+	public static Image[] shuttle;
+	public static Image[] defender;
+	public static Image[] boss;
+
+	// Bullets
+	public static Image[] playerBullet;
+	public static Image[] defenderBullet;
+	public static Image[] bossBullet;
+
+	// Effects
+	public static Image[] explosion;
+
+	// Music
+	private static Sound backgroundMusic;
+
+	private static AudioPlayer player;
+
+	// makes it so that all the assets are loaded only once
+	private static boolean hasLoaded = false;
+
+	public static void load(GWindow window) 
 	{
-		playerShip = new Shape[1];
-		playerShip[0] = new ImageShape(window.getImageFromURL("https://github.com/Jebbs/CSC142FINAL/blob/master/res/PlayerShip.png"),0,0);
-		
-		escapePod = new Shape[1];
-		escapePod[0] = new ImageShape(window.getImageFromURL("https://github.com/Jebbs/CSC142FINAL/blob/master/res/EscapePod.png"),0,0);
-		
-		shuttle = new Shape[2];
-		shuttle[0] = new ImageShape(window.getImageFromURL("https://github.com/Jebbs/CSC142FINAL/blob/master/res/Shuttle.png"),0,0);
-		shuttle[1] = new ImageShape(window.getImageFromURL("https://github.com/Jebbs/CSC142FINAL/blob/master/res/ShuttleHit.png"),0,0);
-		
-		defender = new Shape[3];
-		defender[0] = new ImageShape(window.getImageFromURL("https://github.com/Jebbs/CSC142FINAL/blob/master/res/Defender.png"),0,0);
-		defender[1] = new ImageShape(window.getImageFromURL("https://github.com/Jebbs/CSC142FINAL/blob/master/res/DefenderHit1.png"),0,0);
-		defender[2] = new ImageShape(window.getImageFromURL("https://github.com/Jebbs/CSC142FINAL/blob/master/res/DefenderHit2.png"),0,0);
-		
-		boss = new Shape[3];
-		boss[0] = new ImageShape(window.getImageFromURL("https://github.com/Jebbs/CSC142FINAL/blob/master/res/Boss.png"),0,0);
-		boss[1] = new ImageShape(window.getImageFromURL("https://github.com/Jebbs/CSC142FINAL/blob/master/res/BossDamage1.png"),0,0);
-		boss[2] = new ImageShape(window.getImageFromURL("https://github.com/Jebbs/CSC142FINAL/blob/master/res/BossDamage2.png"),0,0);
-		
-		
-		playerBullet = new Shape[1];
-		playerBullet[0] = new ImageShape(window.getImageFromURL("https://github.com/Jebbs/CSC142FINAL/blob/master/res/PlayerBullet.png"),0,0);
-		
-		defenderBullet = new Shape[1];
-		defenderBullet[0] = new ImageShape(window.getImageFromURL("https://github.com/Jebbs/CSC142FINAL/blob/master/res/DefenderBullet.png"),0,0);
-		
-		bossBullet = new Shape[1];
-		bossBullet[0] = new ImageShape(window.getImageFromURL("https://github.com/Jebbs/CSC142FINAL/blob/master/res/BossBullet.png"),0,0);
-		
-		
+		if (!hasLoaded) 
+		{
+			playerShip = new Image[1];
+			playerShip[0] = window.getImageFromURL("http://jebbs.github.io/CSC142FINAL/res/PlayerShip.png");
+
+			escapePod = new Image[1];
+			escapePod[0] = window.getImageFromURL("http://jebbs.github.io/CSC142FINAL/res/EscapePod.png");
+
+			shuttle = new Image[2];
+			shuttle[1] = window.getImageFromURL("http://jebbs.github.io/CSC142FINAL/res/Shuttle.png");
+			shuttle[0] = window.getImageFromURL("http://jebbs.github.io/CSC142FINAL/res/ShuttleHit.png");
+
+			defender = new Image[3];
+			defender[2] = window.getImageFromURL("http://jebbs.github.io/CSC142FINAL/res/Defender.png");
+			defender[1] = window.getImageFromURL("http://jebbs.github.io/CSC142FINAL/res/DefenderHit1.png");
+			defender[0] = window.getImageFromURL("http://jebbs.github.io/CSC142FINAL/res/DefenderHit2.png");
+
+			boss = new Image[3];
+			boss[0] = window.getImageFromURL("http://jebbs.github.io/CSC142FINAL/res/Boss.png");
+			boss[1] = window.getImageFromURL("http://jebbs.github.io/CSC142FINAL/res/BossDamage1.png");
+			boss[2] = window.getImageFromURL("http://jebbs.github.io/CSC142FINAL/res/BossDamage2.png");
+
+			playerBullet = new Image[1];
+			playerBullet[0] = window.getImageFromURL("http://jebbs.github.io/CSC142FINAL/res/PlayerBullet.png");
+
+			defenderBullet = new Image[1];
+			defenderBullet[0] = window.getImageFromURL("http://jebbs.github.io/CSC142FINAL/res/DefenderBullet.png");
+
+			bossBullet = new Image[1];
+			bossBullet[0] = window.getImageFromURL("http://jebbs.github.io/CSC142FINAL/res/BossBullet.png");
+
+			explosion = new Image[17];
+			for (int i = 0; i < explosion.length; i++) 
+			{
+				explosion[i] = window.getImageFromURL("http://jebbs.github.io/CSC142FINAL/res/explosion/explosion"+ (i + 1) + ".png");
+			}
+
+			try 
+			{
+				backgroundMusic = new Sound(new URL(
+						"http://jebbs.github.io/CSC142FINAL/res/music.wav"));
+			} 
+			catch (MalformedURLException e) 
+			{
+				e.printStackTrace();
+			}
+
+			player = new AudioPlayer();
+
+			player.loop(backgroundMusic);
+			
+			
+			hasLoaded = true;
+		}
+
 	}
-	
-	
+
 }

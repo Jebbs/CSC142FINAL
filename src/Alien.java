@@ -1,24 +1,28 @@
-import java.awt.Color;
 import java.awt.Point;
+import java.util.ArrayList;
 
 import uwcse.graphics.GWindow;
-import uwcse.graphics.Line;
-import uwcse.graphics.Oval;
-import uwcse.graphics.Rectangle;
-import uwcse.graphics.Shape;
+
 
 /**
  * The representation and display of an Alien
  */
 
-public class Alien extends MovingObject {
-	// Size of an Alien
+public abstract class Alien extends MovingObject {
+	
 	public static final int RADIUS = 5;
-
+	
+	
 	// Number of lives in this Alien
 	// When 0, this Alien is dead
-	private int lives;
+	protected int lives;
 
+	protected int xMovement;
+	protected int yMovement;
+	
+	protected int WIDTH;
+	protected int HEIGHT;
+	
 	/**
 	 * Create an alien in the graphics window
 	 * 
@@ -29,10 +33,10 @@ public class Alien extends MovingObject {
 	 */
 	public Alien(GWindow window, Point center) {
 		super(window, center);
-		this.lives = (int) (Math.random() * 3 + 1);
+		//this.lives = (int) (Math.random() * 3 + 1);
 
 		// Display this Alien
-		this.draw();
+		//this.draw();
 	}
 
 	/**
@@ -40,6 +44,11 @@ public class Alien extends MovingObject {
 	 * the graphics window if it is dead.
 	 */
 	public void isShot() {
+		lives -=1;
+		if(isDead())
+		{
+			this.erase();
+		}
 	}
 
 	/**
@@ -60,35 +69,52 @@ public class Alien extends MovingObject {
 	 * Move this Alien As a start make all of the aliens move downward. If an
 	 * alien reaches the bottom of the screen, it reappears at the top.
 	 */
-	public void move() {
-	}
+	public abstract void move();
 
 	/**
 	 * Display this Alien in the graphics window
 	 */
-	protected void draw() {
-		// pick the color (according to the number of lives left)
-		Color color = Color.red; // all red but change this
-
-		// Graphics elements for the display of this Alien
-		// A circle on top of an X
-		this.shapes = new Shape[3];
-		this.shapes[0] = new Line(this.center.x - 2 * RADIUS, this.center.y - 2
-				* RADIUS, this.center.x + 2 * RADIUS, this.center.y + 2
-				* RADIUS, color);
-		this.shapes[1] = new Line(this.center.x + 2 * RADIUS, this.center.y - 2
-				* RADIUS, this.center.x - 2 * RADIUS, this.center.y + 2
-				* RADIUS, color);
-		this.shapes[2] = new Oval(this.center.x - RADIUS, this.center.y
-				- RADIUS, 2 * RADIUS, 2 * RADIUS, color, true);
-
-		for (int i = 0; i < this.shapes.length; i++)
-			this.window.add(this.shapes[i]);
-
-		// Bounding box of this Alien
-		this.boundingBox = new Rectangle(this.center.x - 2 * RADIUS,
-				this.center.y - 2 * RADIUS, 4 * RADIUS, 4 * RADIUS);
-
-		this.window.doRepaint();
+	protected abstract void draw();
+	
+	/**
+	 * Returns if the alien is shooting at the player.
+	 */
+	public boolean isShooting()
+	{
+		return false;
+	}
+	
+	/**
+	 * Adds bullets to the list of bullets if the alien is shooting.
+	 * 
+	 * @param alienBullets The list of bullets to add to.
+	 */
+	public void shoot(ArrayList<Bullet> alienBullets)
+	{
+		//do nothing usually
+	}
+	
+	/**
+	 * Returns the width of the alien ship.
+	 */
+	public int getWidth()
+	{
+		return WIDTH;
+	}
+	
+	/**
+	 * Returns the height of the alien ship.
+	 */
+	public int getHeight()
+	{
+		return HEIGHT;
+	}
+	
+	/**
+	 * Returns true if this ship is the boss ship.
+	 */
+	public boolean isTheBoss()
+	{
+		return false;
 	}
 }

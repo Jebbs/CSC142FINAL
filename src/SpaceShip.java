@@ -3,31 +3,37 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 import uwcse.graphics.GWindow;
-import uwcse.graphics.Line;
+import uwcse.graphics.ImageShape;
 import uwcse.graphics.Rectangle;
 import uwcse.graphics.Shape;
-import uwcse.graphics.Triangle;
+import uwcse.graphics.TextShape;
 
 /**
  * The space ship
  */
 public class SpaceShip extends MovingObject {
 	/** Height of a space ship */
-	public static final int HEIGHT = 40;
+	public static final int HEIGHT = 68;
 
 	/** Width of a space ship */
-	public static final int WIDTH = 20;
-
-	/** Is the space ship shooting with its laser? */
-	private boolean isShooting;
+	public static final int WIDTH = 76;
+	
+	private TextShape healthText;
+	private Rectangle healthBar;
+	
+	private int health;
 
 	/**
 	 * Construct this SpaceShip
 	 */
 	public SpaceShip(GWindow window, Point center) {
 		super(window, center);
-		this.direction = MovingObject.LEFT;
-
+		this.direction = MovingObject.LEFT;	
+		
+		healthText = new TextShape("Health", 0, window.getWindowHeight() - 30, Color.GREEN);
+		
+		health = 10;
+		
 		// Draw this SpaceShip
 		this.draw();
 	}
@@ -46,7 +52,7 @@ public class SpaceShip extends MovingObject {
 		// move this SpaceShip
 		boolean isMoveOK;
 		// Distance covered by the space ship in one step
-		int step = this.boundingBox.getWidth() / 2;
+		int step = this.boundingBox.getWidth() / 4;
 
 		do {
 			int x = this.center.x;
@@ -90,58 +96,73 @@ public class SpaceShip extends MovingObject {
 	 * @param aliens
 	 *            the ArrayList of aliens
 	 */
-	public void shoot(ArrayList<Alien> aliens) {
-		this.isShooting = true;
+	public void shoot(ArrayList<Bullet> playerBullets) 
+	{
+		playerBullets.add(new PlayerBullet(window, new Point(center.x, center.y - HEIGHT/2)));
 	}
 
 	/**
 	 * Draw this SpaceShip in the graphics window
 	 */
 	protected void draw() {
-		this.shapes = new Shape[5];
 
-		// Body of the space ship
-		Rectangle body = new Rectangle(this.center.x - SpaceShip.WIDTH / 2,
-				this.center.y - SpaceShip.HEIGHT / 2, SpaceShip.WIDTH,
-				SpaceShip.HEIGHT, Color.cyan, true);
-
-		this.shapes[0] = body;
-
-		// Cone on top
-		int x1 = body.getX();
-		int y1 = body.getY();
-		int x2 = x1 + body.getWidth();
-		int y2 = y1;
-		int x3 = body.getCenterX();
-		int y3 = y1 - body.getWidth();
-		this.shapes[1] = new Triangle(x1, y1, x2, y2, x3, y3, Color.pink, true);
-		// Show the laser beam if the rocket is shooting
-		if (this.isShooting) {
-			this.shapes[4] = new Line(x3, y3, x3, 0, Color.yellow);
-			this.isShooting = false;
-		}
-
-		// Wings on the sides
-		x1 = body.getX();
-		y1 = body.getY() + body.getHeight();
-		x2 = body.getX() - body.getWidth() / 2;
-		y2 = y1;
-		x3 = x1;
-		y3 = y1 - body.getWidth() / 2;
-		this.shapes[2] = new Triangle(x1, y1, x2, y2, x3, y3, Color.red, true);
-		x1 = body.getX() + body.getWidth();
-		x2 = x1 + body.getWidth() / 2;
-		x3 = x1;
-		this.shapes[3] = new Triangle(x1, y1, x2, y2, x3, y3, Color.red, true);
+		
+		this.shapes = new Shape[1];
+		
+		this.shapes[0] = new ImageShape(Resources.playerShip[0],this.center.x - WIDTH / 2,
+				this.center.y - HEIGHT / 2);
+		
 
 		// The bounding box of this SpaceShip
 		this.boundingBox = this.shapes[0].getBoundingBox();
 
-		// Put everything in the window
-		for (int i = 0; i < this.shapes.length; i++)
-			if (this.shapes[i] != null)
-				this.window.add(this.shapes[i]);
+		healthBar = new Rectangle(50,window.getWindowHeight() - 27, 10*health, 10, Color.GREEN, true);
+		
+		this.window.add(this.shapes[0]);
+		
+		this.window.add(healthText);
+		
+		this.window.add(healthBar);
 
 		this.window.doRepaint();
 	}
+	
+	/**
+	 * Erases your ship from the screen.
+	 */
+	protected void erase()
+	{
+		super.erase();
+		this.window.remove(healthText);
+		this.window.remove(healthBar);
+	}
+	
+	/**
+	 * Called when your ship has been hit. 
+	 * 
+	 * It decreases your health and erases the ship when you die.
+	 */
+	public void isShot()
+	{
+		health -= 1;
+		
+		if(isDead())
+		{
+			erase();
+		}
+	}
+	
+	/**
+	 * Returns true if your ship has exploded!
+	 */
+	public boolean isDead()
+	{
+		if(health ==0)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	
 }
